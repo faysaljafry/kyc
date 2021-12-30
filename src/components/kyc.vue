@@ -197,39 +197,53 @@
       </button>
     </div>
   </form>
-  <div
-    v-if="valid"
-    class="h-auto bg-gray-800 flex rounded-lg shadow-lg w-1/2 m-auto my-24"
-  >
-    <div class="border-dotted border-2 h-auto w-1/2 rounded-lg m-5 mb-5">
-      <input
-        v-if="!url1"
-        id="file-upload"
-        type="file"
-        @change="onFileChange"
-        accept="image/*"
-      />
-      <label for="file-upload" class="custom-file-upload">
-        <i class="fa fa-cloud-upload"></i> Upload Front Side of CNIC
-      </label>
-      <div id="preview">
-        <img v-if="url1" :src="url1" />
+  <div>
+    <div
+      v-if="valid"
+      class="h-auto bg-gray-800 flex rounded-lg w-1/2 shadow-lg m-auto my-24"
+    >
+      <div class="border-dotted border-2 h-auto w-1/2 rounded-lg m-5 mb-5">
+        <input
+          v-if="!url1"
+          id="file-upload"
+          type="file"
+          @change="onFileChange"
+          accept="image/*"
+        />
+        <label for="file-upload" class="custom-file-upload">
+          <i class="fa fa-cloud-upload"></i> Upload Front Side of CNIC
+        </label>
+        <div id="preview">
+          <img v-if="url1" :src="url1" />
+        </div>
+      </div>
+      <div class="border-dotted border-2 h-auto w-1/2 rounded-lg m-5 mb-5">
+        <input
+          v-if="!url2"
+          id="file-upload-2"
+          type="file"
+          accept="image/*"
+          @change="onFileChange2"
+        />
+        <label for="file-upload-2" class="custom-file-upload">
+          <i class="fa fa-cloud-upload"></i> Upload Back Side of CNIC
+        </label>
+        <div id="preview">
+          <img v-if="url2" :src="url2" />
+        </div>
       </div>
     </div>
-    <div class="border-dotted border-2 h-auto w-1/2 rounded-lg m-5 mb-5">
-      <input
-        v-if="!url2"
-        id="file-upload-2"
-        type="file"
-        accept="image/*"
-        @change="onFileChange2"
-      />
-      <label for="file-upload-2" class="custom-file-upload">
-        <i class="fa fa-cloud-upload"></i> Upload Back Side of CNIC
-      </label>
-      <div id="preview">
-        <img v-if="url2" :src="url2" />
-      </div>
+    <div class="text-right m-auto">
+      <button
+        v-if="valid"
+        :disabled="v$.form.$invalid"
+        type="button"
+        @click="saveData"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+      >
+        Save and Proceed
+        <i class="fas fa-arrow-right"></i>
+      </button>
     </div>
   </div>
   <link
@@ -244,6 +258,7 @@
 import useVuelidate from '@vuelidate/core';
 import { minLength, required } from '@vuelidate/validators';
 import { mask } from 'vue-the-mask';
+import service from '../services/service';
 export default {
   setup() {
     return { v$: useVuelidate() };
@@ -310,6 +325,10 @@ export default {
       console.log('The function was Successfully called.');
       console.log(this.form);
       this.valid = true;
+    },
+    async saveData() {
+      const response = await service.saveForm(this.form);
+      console.log(response);
     },
   },
 };
